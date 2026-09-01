@@ -1,0 +1,38 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8787:8787"
+    environment:
+      APP_ENV: production
+      API_KEY: ${API_KEY:-dev-local-key}
+      DATABASE_URL: postgresql+psycopg://intake:intake@postgres:5432/intake
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: intake
+      POSTGRES_PASSWORD: intake
+      POSTGRES_DB: intake
+    ports:
+      - "5432:5432"
+    volumes:
+      - intake_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U intake -d intake"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  intake_pg:

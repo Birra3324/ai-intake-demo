@@ -1,0 +1,35 @@
+[
+  {
+    "customer_name": "Amina Hassan",
+    "company": "Northwind Logistics",
+    "email": "amina.hassan@northwind.example",
+    "phone": "+1-206-555-0142",
+    "service_requested": "Warehouse ops reporting automation",
+    "budget": "$80,000",
+    "project_description": "We run weekly warehouse KPIs out of three Google Sheets and paste them into Slack by hand. We want that automated into a dashboard plus a Monday morning Slack digest. Leadership asked for this live by the end of the month \u2014 it is blocking the Q4 ops review.",
+    "deadline": "2026-09-30",
+    "source": "website"
+  },
+  {
+    "customer_name": "Diego Alvarez",
+    "company": "Harbor & Pine Bakery",
+    "email": "diego@harborandpine.example",
+    "phone": "+1-503-555-0188",
+    "service_requested": "Catering request form + email routing",
+    "budget": "$6,000\u2013$9,000",
+    "project_description": "We need a simple catering request form on our site that emails the owner and drops a row into a spreadsheet. No rush; sometime this quarter is fine. We are a 12-person bakery in Portland.",
+    "deadline": "2026-Q4",
+    "source": "referral"
+  },
+  {
+    "customer_name": "Sam",
+    "company": null,
+    "email": "sam.curious@example.com",
+    "phone": null,
+    "service_requested": "not sure",
+    "budget": "as cheap as possible",
+    "project_description": "hey can you automate stuff for my side project maybe",
+    "deadline": null,
+    "source": "twitter"
+  }
+]
