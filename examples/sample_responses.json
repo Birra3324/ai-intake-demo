@@ -1,0 +1,66 @@
+{
+  "_comment": "EXAMPLE JSON ONLY — not live traffic, not a recording of a specific run. Field names match the FastAPI response models in app/models/schemas.py. Scores and summaries vary with the LLM; IDs and request_id values are placeholders.",
+  "health_get": {
+    "_endpoint": "GET /health",
+    "_http_status": 200,
+    "_schema": "HealthOut",
+    "body": {
+      "ok": true,
+      "status": "ok",
+      "db": true,
+      "ai_provider": "ollama",
+      "model": "llama3.2",
+      "ollama": true
+    }
+  },
+  "intake_post_201": [
+    {
+      "_scenario": "high — demo_requests.json[0] (Northwind ops automation)",
+      "_endpoint": "POST /api/v1/intake",
+      "_http_status": 201,
+      "_schema": "IntakeResponse",
+      "body": {
+        "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        "status": "processed",
+        "lead_score": 86,
+        "urgency": "high",
+        "assigned_department": "enterprise_sales",
+        "summary": "Northwind wants weekly warehouse KPIs automated from spreadsheets into a dashboard and a Monday Slack digest before month-end.",
+        "recommended_action": "Book a 30-minute discovery call this week and send a sample dashboard.",
+        "request_id": "b3f1c0a2-4d8e-4a91-9c22-6e5a1d8b7f01"
+      }
+    },
+    {
+      "_scenario": "mid — demo_requests.json[1] (bakery catering form)",
+      "_endpoint": "POST /api/v1/intake",
+      "_http_status": 201,
+      "_schema": "IntakeResponse",
+      "body": {
+        "id": "2a1f8c44-11d0-4b7a-9e3c-55d0c8a91b22",
+        "status": "processed",
+        "lead_score": 64,
+        "urgency": "medium",
+        "assigned_department": "sales",
+        "summary": "Harbor & Pine Bakery wants a catering request form that emails the owner and appends a spreadsheet row; timeline is this quarter.",
+        "recommended_action": "Send a scoped form-plus-email quote and a simple timeline for Q4.",
+        "request_id": "c8aa4410-9f2b-4d33-8e17-0a6c5b2d1194"
+      }
+    },
+    {
+      "_scenario": "low — demo_requests.json[2] (vague cheap inquiry)",
+      "_endpoint": "POST /api/v1/intake",
+      "_http_status": 201,
+      "_schema": "IntakeResponse",
+      "body": {
+        "id": "9e0b3d12-6c48-4f21-a7d5-3b88e14c0f56",
+        "status": "processed",
+        "lead_score": 28,
+        "urgency": "low",
+        "assigned_department": "nurture",
+        "summary": "Unnamed side-project inquiry with no budget, deadline, or concrete automation scope.",
+        "recommended_action": "Reply with a short intake questionnaire; do not prioritize against qualified leads.",
+        "request_id": "f01d9e77-2c5a-4b10-91ae-47d3c8e6a220"
+      }
+    }
+  ]
+}
