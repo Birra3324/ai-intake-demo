@@ -1,25 +1,27 @@
-# Screenshots still needed
+# Screenshots
 
-This folder is a capture checklist. **No screenshot image files are in the repo yet** (no png/gif/jpg placeholders). Capture these locally, then drop real files here and link them from the root README.
+Real terminal captures from a local `uvicorn` run of this repo (`127.0.0.1:8787`). No placeholder or generated images.
 
-Do not commit admin panels, `.env` values, API keys, or private Slack workspaces. Redact `X-API-Key` and webhook URLs if they appear.
+Do not commit admin panels, `.env` values, API keys, or private Slack workspaces. The demo key is referenced only as `$API_KEY`.
 
-## Capture list
+## Captured
 
-1. **Health JSON** — `GET http://127.0.0.1:8787/health` in a terminal or browser, showing `ok`, `db`, `ai_provider`, and `model`.
-2. **High-score intake response** — HTTP 201 body from posting `examples/demo_requests.json` index 0 (`Amina Hassan` / Northwind). Show `lead_score`, `urgency`, and `assigned_department`.
-3. **Slack log or Slack line** — uvicorn log line `slack skipped (SLACK_WEBHOOK_URL unset)` (default demo), **or** a redacted Slack message if you configured an incoming webhook.
-4. **n8n workflow canvas** — after importing `n8n/workflow.json`: validate → FastAPI → score routing → Slack/queues.
-5. **`docker compose up`** — compose output with `api` and `postgres` healthy (or the equivalent `docker compose ps`).
+| File | What it shows |
+| --- | --- |
+| [health-json.png](health-json.png) | `GET /health` — `ok`, `db: true`, `ai_provider: ollama`, `model: llama3.2`, `ollama: false` |
+| [high-score-intake.png](high-score-intake.png) | Live `POST /api/v1/intake` HTTP 201 — `lead_score` 100, `urgency: critical`, `assigned_department: enterprise_sales` |
+| [slack-log-or-message.png](slack-log-or-message.png) | uvicorn log: `slack skipped (SLACK_WEBHOOK_URL unset)` plus the logged payload stub |
 
-## After you capture them
+Capture notes (this environment):
 
-Suggested filenames (when real images exist):
+- Ollama was not running (`ollama: false` on `/health`). The high-score 201 is the **heuristic high-value path**: `status=needs_review`, `summary=null`, score still ≥ 80 so routing and Slack logging fire. With `llama3.2` up, the same endpoint returns `status=processed` and a model summary.
+- `examples/demo_requests.json[0]` (Amina / Northwind) scores **70** on the heuristic when the LLM is down, so the high-score shot used a live POST of a complete high-value payload (same `IntakeCreate` fields) to exercise score ≥ 80.
 
-- `health-json.png`
-- `high-score-intake.png`
-- `slack-log-or-message.png`
-- `n8n-workflow-canvas.png`
-- `docker-compose-up.png`
+## Still blocked in this VM
 
-Until those files exist, this README is the only content in this directory on purpose.
+| Shot | Why |
+| --- | --- |
+| n8n workflow canvas | n8n is not installed or runnable here. The workflow JSON is in [`n8n/workflow.json`](../../n8n/workflow.json); import it locally (see [`n8n/README.md`](../../n8n/README.md)) and drop `n8n-workflow-canvas.png` here. |
+| `docker compose up` | `docker` is not installed in this environment (`command -v docker` is empty). Run `docker compose up --build` locally and add `docker-compose-up.png` (api + postgres healthy). |
+
+Suggested filenames when those two exist: `n8n-workflow-canvas.png`, `docker-compose-up.png`.

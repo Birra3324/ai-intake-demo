@@ -8,7 +8,19 @@ Built as a local portfolio demo you can run with Ollama (`llama3.2`) and pytest.
 
 ## Screenshots
 
-Not in the repo yet. Capture list: [docs/screenshots/README.md](docs/screenshots/README.md).
+Live captures from a local `uvicorn` run (Ollama was not reachable, so scoring used the heuristic fallback). Notes and the two still-blocked shots: [docs/screenshots/README.md](docs/screenshots/README.md).
+
+**Health JSON** (`GET /health`)
+
+![GET /health JSON](docs/screenshots/health-json.png)
+
+**High-score intake** (`POST /api/v1/intake` → HTTP 201, `lead_score` 100)
+
+![High-score intake 201](docs/screenshots/high-score-intake.png)
+
+**Slack path** (`SLACK_WEBHOOK_URL` unset — payload logged, not posted)
+
+![Slack skipped log line](docs/screenshots/slack-log-or-message.png)
 
 ## Architecture
 
