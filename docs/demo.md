@@ -63,7 +63,7 @@ Without `jq`, post all three at once:
 API_KEY="$API_KEY" python scripts/post_demo.py
 ```
 
-Each call returns HTTP 201 with `id`, `status`, `lead_score`, `urgency`, `assigned_department`, `summary`, `recommended_action`, `request_id`. Example shapes: [examples/sample_responses.json](../examples/sample_responses.json).
+Each call returns HTTP 201 with `id`, `status`, `lead_score`, `urgency`, `assigned_department`, `summary`, `recommended_action`, `request_id`. Example shapes: [examples/sample_responses.json](../examples/sample_responses.json). Live terminal captures: [docs/screenshots/README.md](screenshots/README.md).
 
 Talking points:
 
