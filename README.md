@@ -8,7 +8,7 @@ Built as a local portfolio demo you can run with Ollama (`llama3.2`) and pytest.
 
 ## Screenshots
 
-Live captures from a local `uvicorn` run (Ollama was not reachable, so scoring used the heuristic fallback). Notes and the two still-blocked shots: [docs/screenshots/README.md](docs/screenshots/README.md).
+Live local captures (notes: [docs/screenshots/README.md](docs/screenshots/README.md)).
 
 **Health JSON** (`GET /health`)
 
@@ -21,6 +21,14 @@ Live captures from a local `uvicorn` run (Ollama was not reachable, so scoring u
 **Slack path** (`SLACK_WEBHOOK_URL` unset — payload logged, not posted)
 
 ![Slack skipped log line](docs/screenshots/slack-log-or-message.png)
+
+**Docker Compose** (`api` + `postgres` healthy)
+
+![docker compose up](docs/screenshots/docker-compose-up.png)
+
+**n8n workflow canvas** (import `n8n/workflow.json`)
+
+![n8n AI Intake Routing](docs/screenshots/n8n-workflow-canvas.png)
 
 ## Architecture
 
