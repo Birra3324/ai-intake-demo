@@ -52,3 +52,10 @@ Capture notes: [screenshots/README.md](screenshots/README.md).
 Alembic migrations, CRM adapters, and a human-review UI are listed as future improvements in the README. They are not part of this verified demo.
 
 Day 9 added CI and this checklist. No new product features.
+
+## Day 10 close-out (2026-09-11)
+
+- Merged [PR #4](https://github.com/Birra3324/ai-intake-demo/pull/4) (CI workflow + this status doc) to `main`.
+- Mac local verify: `.venv/bin/pytest -q` → **21 passed** (Python 3.14.6 Homebrew).
+- Pulled `main` onto `~/Desktop/Projects/ai-intake-demo` (includes `.github/workflows/ci.yml` and `docs/status.md`).
+- Days 1–10 intake track: **complete**. Next plan block: Days 11–18 Company RAG Knowledge Assistant (new repo).
