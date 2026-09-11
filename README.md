@@ -1,10 +1,14 @@
 # AI Intake Automation Platform
 
+[![CI](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml)
+
 FastAPI service that turns a contact-form webhook into a structured, scored lead: n8n (optional) → API → local or cloud LLM → SQLite/Postgres → routing → Slack.
 
 Built as a local portfolio demo you can run with Ollama (`llama3.2`) and pytest. No paid APIs required. Source: [github.com/Birra3324/ai-intake-demo](https://github.com/Birra3324/ai-intake-demo) (no hosted demo URL).
 
 **How to demo:** [5–10 minute walkthrough](docs/demo.md) — venv, uvicorn on `:8787`, post the three [example leads](examples/demo_requests.json), then `GET /health` and `GET /api/v1/leads`.
+
+**Status (Days 1–10):** [verified local checklist](docs/status.md) — stack, screenshots, pytest, docker compose, n8n import.
 
 ## Screenshots
 
@@ -127,7 +131,7 @@ See `.env.example`. Important ones:
 | GET | `/api/v1/leads/{id}` | `X-API-Key` |
 | PATCH | `/api/v1/leads/{id}` | `X-API-Key` |
 
-Full shapes: [docs/api.md](docs/api.md). Architecture notes: [docs/architecture.md](docs/architecture.md). Recruiter walkthrough: [docs/demo.md](docs/demo.md).
+Full shapes: [docs/api.md](docs/api.md). Architecture notes: [docs/architecture.md](docs/architecture.md). Recruiter walkthrough: [docs/demo.md](docs/demo.md). Status: [docs/status.md](docs/status.md).
 
 When the LLM is down or returns invalid JSON the lead is **still stored** with `status=needs_review` and a heuristic score. Rows are not dropped.
 
@@ -166,7 +170,7 @@ python3 -m venv .venv
 .venv/bin/pytest -q
 ```
 
-Tests use a temp SQLite file and mock the LLM. They do not call Ollama or OpenAI.
+Tests use a temp SQLite file and mock the LLM. They do not call Ollama or OpenAI. The same command runs on GitHub Actions (push/PR to `main`).
 
 ## Demo data
 
