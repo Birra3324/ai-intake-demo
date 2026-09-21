@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml)
 
+> Open to remote AI automation roles. Email: birragimedi@gmail.com | GitHub: @Birra3324 | LinkedIn: linkedin.com/in/birra-gemedi
+
 FastAPI service that turns a contact-form webhook into a structured, scored lead: n8n (optional) → API → local or cloud LLM → SQLite/Postgres → routing → Slack.
 
 Built as a local portfolio demo you can run with Ollama (`llama3.2`) and pytest. No paid APIs required. Source: [github.com/Birra3324/ai-intake-demo](https://github.com/Birra3324/ai-intake-demo) (no hosted demo URL).
