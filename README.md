@@ -67,7 +67,8 @@ Direct `POST /api/v1/intake` works without n8n. `POST /webhook/intake` is kept a
 ## Setup
 
 ```bash
-cd ~/Desktop/Projects/ai-intake-demo
+git clone https://github.com/Birra3324/ai-intake-demo.git
+cd ai-intake-demo
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -166,7 +167,7 @@ This demo uses SQLAlchemy `create_all()` on boot rather than Alembic — see [do
 ## Testing
 
 ```bash
-cd ~/Desktop/Projects/ai-intake-demo
+cd ai-intake-demo
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/pytest -q
@@ -189,3 +190,15 @@ Three realistic payloads live in [examples/demo_requests.json](examples/demo_req
 ## License
 
 MIT © 2026 Birra Gemedi
+
+## Reliability and deployment boundaries
+
+The API now requires a nonempty `API_KEY` at startup and fails closed if configuration is missing. Health remains public. Use a strong private value; do not use example values on a hosted service.
+
+Send an `Idempotency-Key` header (1–200 ASCII letters, digits, dot, underscore, colon or hyphen) for replay-safe intake. The same key and normalized payload returns the same lead; a changed payload returns HTTP 409. A separate database ledger enforces uniqueness, including concurrent inserts, without changing existing lead columns. The key is global to this single-service-key demo: namespace it by source. Keep ledger entries as long as replay protection is needed. Requests without a key retain create-on-each-request behavior. Concurrent first requests can still invoke the model twice; only one lead and notification attempt are committed.
+
+The n8n workflow forwards a caller's `Idempotency-Key`; otherwise it uses the execution ID for retries within that execution. New webhook deliveries without a stable caller key are separate events. Do not derive a permanent key from a person's email.
+
+Notifications remain best effort after commit. A process crash or failed Slack/SMTP request can lose delivery; this is not a durable outbox. Choose one notification owner: for n8n routing, leave the API notification settings unset. The n8n destinations labeled Sales Queue and Nurture Track are Slack messages, not CRM queues.
+
+Operational logs omit customer payloads and provider exception bodies. Provider retries cover transport errors and selected transient HTTP statuses; permanent HTTP errors return to the review fallback without retry. Before public hosting, still add request/rate limits, a deployment-specific secret store, durable delivery if needed, and monitoring. This repository does not claim production readiness.

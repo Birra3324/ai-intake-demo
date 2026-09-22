@@ -1,4 +1,4 @@
-"""Slack webhook + optional SMTP. If unset, log the payload so tests still cover it."""
+"""Slack webhook + optional SMTP. Logs omit customer payloads and provider exception text."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def send_slack(lead: Lead) -> bool:
     body = {"text": _slack_text(lead)}
     url = (settings.slack_webhook_url or "").strip()
     if not url:
-        log.info("slack skipped (SLACK_WEBHOOK_URL unset) payload=%s", _payload(lead))
+        log.info("slack skipped (SLACK_WEBHOOK_URL unset) lead_id=%s", lead.id)
         return False
     try:
         r = httpx.post(url, json=body, timeout=8.0)
@@ -61,7 +61,7 @@ def send_slack(lead: Lead) -> bool:
         log.info("slack notification sent lead_id=%s", lead.id)
         return True
     except Exception as exc:  # noqa: BLE001
-        log.error("slack notification failed: %s", exc)
+        log.error("slack notification failed type=%s", type(exc).__name__)
         return False
 
 
@@ -87,7 +87,7 @@ def send_email(lead: Lead) -> bool:
         log.info("email notification sent lead_id=%s", lead.id)
         return True
     except Exception as exc:  # noqa: BLE001
-        log.error("email notification failed: %s", exc)
+        log.error("email notification failed type=%s", type(exc).__name__)
         return False
 
 

@@ -16,6 +16,8 @@ from app.db.database import init_db
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    if not get_settings().api_key.strip():
+        raise RuntimeError("API_KEY must be configured before starting the service")
     init_db()
     yield
 

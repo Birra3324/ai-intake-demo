@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import hashlib
+import json
 from datetime import datetime, timezone
 
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models.lead import Lead
+from app.models.lead import IntakeEvent, Lead
 from app.models.schemas import IntakeCreate, LeadUpdate
 from app.services.ai_service import analyze_intake
 from app.services.lead_scoring import department_for_score, heuristic_score, urgency_for_score
@@ -16,7 +20,29 @@ from app.services.notification_service import notify_high_value
 log = logging.getLogger("intake.db")
 
 
-def create_lead_from_intake(db: Session, intake: IntakeCreate) -> Lead:
+def create_lead_from_intake(
+    db: Session, intake: IntakeCreate, idempotency_key: str | None = None
+) -> Lead:
+    fingerprint = hashlib.sha256(json.dumps(
+        intake.model_dump(mode="json"), sort_keys=True, separators=(",", ":")
+    ).encode()).hexdigest()
+
+    def replay() -> Lead | None:
+        event = db.get(IntakeEvent, idempotency_key) if idempotency_key else None
+        if event is None:
+            return None
+        if event.payload_hash != fingerprint:
+            raise HTTPException(409, "Idempotency key already used for a different request")
+        existing = db.get(Lead, event.lead_id)
+        if existing is None:
+            raise HTTPException(409, "Original intake record is unavailable")
+        return existing
+
+    existing = replay()
+    if existing is not None:
+        return existing
+    # End the lookup transaction before slow provider calls/concurrent inserts.
+    db.rollback()
     ai = analyze_intake(intake)
     heuristic = heuristic_score(intake)
 
@@ -62,14 +88,24 @@ def create_lead_from_intake(db: Session, intake: IntakeCreate) -> Lead:
         status=status,
     )
     db.add(lead)
-    db.commit()
+    try:
+        db.flush()
+        if idempotency_key:
+            db.add(IntakeEvent(key=idempotency_key, payload_hash=fingerprint, lead_id=lead.id))
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        existing = replay()
+        if existing is not None:
+            return existing
+        raise
     db.refresh(lead)
     log.info("lead stored id=%s status=%s score=%s", lead.id, lead.status, lead.lead_score)
 
     try:
         notify_high_value(lead)
     except Exception as exc:  # noqa: BLE001
-        log.error("notification failed after persist: %s", exc)
+        log.error("notification failed after persist type=%s", type(exc).__name__)
 
     return lead
 

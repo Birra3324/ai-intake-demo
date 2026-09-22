@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Header, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.logging import get_request_id
@@ -41,14 +41,10 @@ def create_intake(
     payload: IntakeCreate,
     request: Request,
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key", min_length=1, max_length=200, pattern=r"^[A-Za-z0-9._:-]+$"),
 ) -> IntakeResponse:
-    log.info(
-        "intake received customer=%s company=%s source=%s",
-        payload.customer_name,
-        payload.company,
-        payload.source,
-    )
-    lead = create_lead_from_intake(db, payload)
+    log.info("intake received")
+    lead = create_lead_from_intake(db, payload, idempotency_key)
     return _respond(lead, request)
 
 
@@ -63,7 +59,8 @@ def legacy_webhook_intake(
     payload: LegacyIntakeIn,
     request: Request,
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key", min_length=1, max_length=200, pattern=r"^[A-Za-z0-9._:-]+$"),
 ) -> IntakeResponse:
-    log.info("legacy webhook intake name=%s source=%s", payload.name, payload.source)
-    lead = create_lead_from_intake(db, payload.to_intake())
+    log.info("legacy webhook intake received")
+    lead = create_lead_from_intake(db, payload.to_intake(), idempotency_key)
     return _respond(lead, request)

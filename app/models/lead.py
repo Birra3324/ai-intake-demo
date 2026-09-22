@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Integer, JSON, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
@@ -52,3 +52,12 @@ class Lead(Base):
     updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow, nullable=True
     )
+
+
+class IntakeEvent(Base):
+    """Replay ledger; separate table preserves existing lead schemas."""
+
+    __tablename__ = "intake_events"
+    key: Mapped[str] = mapped_column(String(200), primary_key=True)
+    payload_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    lead_id: Mapped[str] = mapped_column(ForeignKey("leads.id"), nullable=False)

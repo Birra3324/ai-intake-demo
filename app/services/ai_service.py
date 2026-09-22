@@ -84,17 +84,19 @@ def _post_with_retries(url: str, **kwargs: Any) -> httpx.Response:
             response = httpx.post(url, **kwargs)
             response.raise_for_status()
             return response
-        except Exception as exc:  # noqa: BLE001
+        except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+            if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code not in {408, 429, 500, 502, 503, 504}:
+                raise
             last = exc
             log.warning(
                 "AI HTTP attempt %s/%s failed: %s",
                 attempt,
                 attempts,
-                exc,
+                type(exc).__name__,
             )
             if attempt < attempts:
                 _sleep(attempt)
-    raise RuntimeError(f"AI HTTP failed after {attempts} attempts: {last}") from last
+    raise RuntimeError(f"AI HTTP failed after {attempts} attempts") from last
 
 
 def _call_ollama(prompt: str) -> str:
@@ -162,5 +164,5 @@ def analyze_intake(intake: IntakeCreate) -> AIAnalysis | None:
             text = _call_ollama(prompt)
         return parse_ai_json(text)
     except Exception as exc:  # noqa: BLE001
-        log.error("AI analysis failed: %s", exc)
+        log.error("AI analysis failed type=%s", type(exc).__name__)
         return None

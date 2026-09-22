@@ -45,6 +45,10 @@
             {
               "name": "X-API-Key",
               "value": "={{ $env.INTAKE_API_KEY }}"
+            },
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $('Webhook').first().json.headers['idempotency-key'] || ('n8n-' + $execution.id) }}"
             }
           ]
         },
