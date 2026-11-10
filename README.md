@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/Birra3324/ai-intake-demo/actions/workflows/ci.yml)
 
-> Open to remote AI automation roles. Email: birragimedi@gmail.com | GitHub: @Birra3324 | LinkedIn: linkedin.com/in/birra-gemedi
+> Open to remote AI automation roles. Email: birragemedi@gmail.com | GitHub: @Birra3324 | LinkedIn: https://www.linkedin.com/in/birra-gemedi-813337199/
 
 FastAPI service that turns a contact-form webhook into a structured, scored lead: n8n (optional) → API → local or cloud LLM → SQLite/Postgres → routing → Slack.
 
